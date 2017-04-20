@@ -39,7 +39,7 @@
 				</tbody>
 			</table>
 		  </div>
-		  <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-left" style="background-color: rgba(255,255,255,0.4); border-radius: 0%; border:1px solid rgba(255,255,255,0.45); color: rgba(0,0,0,1);">
+		  <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-left" style="background-color: rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.45); color: rgba(0,0,0,1);">
 			<div id="proveedores" class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 sin-padding"></div>
 			<div id="categorias" class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 sin-padding"></div>
 		  </div>
@@ -120,12 +120,13 @@
 				categorias      = JSON.parse(partes[2]);
 				numero_columnas = partes[3];
 				codigo = '<tr>';
+				column_size = 98 / numero_columnas;
 				$.each(data, function( index, value ) {
 					validador_columna = parseInt(index)+1;
 					if (index % numero_columnas == 0) {
 						codigo = codigo + "</tr><tr>";
 					}	
-					codigo = codigo + "<td class='cuadros' title='"+value[0]+'//'+value[1]+'//'+value[2]+'//'+value[3]+'//'+value[4]+'//'+value[5]+'//'+value[6]+'//'+value[7]+'//'+value[8]+"'><b>"+value[0].toUpperCase()+'</b><br>'+value[1]+'<br>'+value[2]+'<br>'+value[3]+'<br>'+value[4]+'<br>'+value[7]+"<br></td>";
+					codigo = codigo + "<td class='cuadros' style='width:"+column_size+"%;' title='"+value[0]+'//'+value[1]+'//'+value[2]+'//'+value[3]+'//'+value[4]+'//'+value[5]+'//'+value[6]+'//'+value[7]+'//'+value[8]+"'><b>"+value[0].toUpperCase()+'</b><br>'+value[1]+'<br>'+value[2]+'<br>'+value[3]+'<br>'+value[4]+'<br>'+value[7]+"<br></td>";
 				});
 
 				$('#mostrador').append(codigo);
