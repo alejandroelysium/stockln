@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>LA NACIONAL</title>
+	<script type="text/javascript" src="libraries/jquery-3.1.1.js"></script>
+	<!--<link rel="stylesheet" type="text/css" href="styles.css">-->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+		.espacio-arriba{
+			margin-top: 10px;
+		}
+		.sin-padding{
+			padding: 0px;
+		}
+	</style>
+</head>
+<body style="background-image: url(dado.jpg); background-repeat: no-repeat; font-family: Lucida Sans Unicode, Lucida Grande, sans-serif; max-width: 2300px; max-height: 1000px;">
+	<div class="container-fluid">
+		<div class="row">
+		  <div class="col-xs-12 col-sm-12 col-md-12 col-ls-12 text-center">
+	 		<h1 style="font-weight: bolder; font-size: 4.5em; color: rgba(255,255,255,0.8); margin-top: 3%;">LA NACIONAL DE LICORES DE COLOMBIA SAS</h1>
+	 		<h2 style="color: rgba(255,255,255,0.8); font-weight: lighter;">DISTRIBUCION DE ESTANTERIA</h2>
+	 		<h5 id="usuario" style="margin: 25px; color: rgba(255,255,255,0.8); font-weight: lighter;"></h5>
+	 		<button id="logout" type="button" class="btn btn-default" style="margin-top: 10px;">
+					<span class="glyphicon glyphicon-ok"></span> Cerrar sesion
+			</button>
+	 		<select id="estanterias" class="form-control center-block" style="max-width: 250px; margin-top: 25px; margin-bottom: 25px;">
+			  <option value="0">Seleccione una estanteria</option>
+			</select>
+		  </div>
+		</div>
+
+		<div class="row espacio-arriba">
+		  <div class="col-xs-8 col-sm-8 col-md-10 col-lg-10 text-center">
+			<table class="table table-bordered" style="background-color: rgba(255,255,255,0.5); color: rgba(0,0,0,1);">
+				<tbody id="mostrador">
+				
+				</tbody>
+			</table>
+		  </div>
+		  <div class="col-xs-4 col-sm-4 col-md-2 col-lg-2 text-left" style="background-color: rgba(255,255,255,0.4); border-radius: 0%; border:1px solid rgba(255,255,255,0.45); color: rgba(0,0,0,1);">
+			<div id="proveedores" class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 sin-padding"></div>
+			<div id="categorias" class="col-xs-11 col-sm-11 col-md-11 col-lg-11 col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 sin-padding"></div>
+		  </div>
+		</div>
+	</div>
+
+	<div id="editarcuadro" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 id="nombre_casilla" class="modal-title">Editar casilla</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="estanteria" class="form-control" placeholder="Ingresa la estanteria">
+                    <input type="hidden" id="posicion" class="form-control" placeholder="Ingresa la posicion">
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Empresa</label>
+	                    <input type="text" id="empresa" class="form-control" placeholder="Ingresa la empresa">
+                    </div>
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Producto</label>
+	                    <input type="text" id="producto" class="form-control" placeholder="Ingresa el producto">
+                    </div>
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Categoria</label>
+	                    <input type="text" id="categoria" class="form-control" placeholder="Ingresa la categoria">
+                    </div>
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Fecha inicial</label>
+	                    <input type="text" id="fechainicial" class="form-control" placeholder="Ingresa la fecha inicial">
+                    </div>
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Fecha final</label>
+	                    <input type="text" id="fechafinal" class="form-control" placeholder="Ingresa la fecha final">
+                    </div>
+                    <div class="form-group">
+	                    <label  for="ejemplo_password_2">Utilidad mensual</label>
+	                    <input type="text" id="mensualidad" class="form-control" placeholder="Ingresa la utilidad mensual">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button id="guardaredicion" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ 	
+ <script>
+ 	$(document).ready(function() {
+		$.get( "/initialData",function( data ) {
+			partes = data.split('&&');
+			estanterias = JSON.parse(partes[0]);
+			usuario = partes[1];
+			$('#usuario').text('Bienvenido '+usuario);
+			$.each(estanterias, function( index, value ) {
+				codigo = "<option value='"+value+"'>Estanteria "+value+"</option>";
+				$('#estanterias').append(codigo);
+			});
+ 		});
+ 	});
+
+	$('#estanterias').change(function(event) {
+		estanteria = $(this).val();
+		$('#mostrador').empty();
+		$('#proveedores').empty();
+		$('#categorias').empty();
+		if (estanteria == 0) {
+			alert('Debes seleccionar una estanteria');
+		} else {
+			$.get( "/showdata",{estanteria:estanteria},function( data ) {
+				partes          = data.split('&&');
+				data            = JSON.parse(partes[0]);
+				proveedores     = JSON.parse(partes[1]);
+				categorias      = JSON.parse(partes[2]);
+				numero_columnas = partes[3];
+				codigo = '<tr>';
+				$.each(data, function( index, value ) {
+					validador_columna = parseInt(index)+1;
+					if (index % numero_columnas == 0) {
+						codigo = codigo + "</tr><tr>";
+					}	
+					codigo = codigo + "<td class='cuadros' title='"+value[0]+'//'+value[1]+'//'+value[2]+'//'+value[3]+'//'+value[4]+'//'+value[5]+'//'+value[6]+'//'+value[7]+'//'+value[8]+"'><b>"+value[0].toUpperCase()+'</b><br>'+value[1]+'<br>'+value[2]+'<br>'+value[3]+'<br>'+value[4]+'<br>'+value[7]+"<br></td>";
+				});
+
+				$('#mostrador').append(codigo);
+
+				
+				$('#proveedores').append("<h3 class='text-center' style='margin-bottom:25px;'><span class='glyphicon glyphicon-user'></span> Proveedores</h3>");
+				$.each(proveedores, function( index, value ) {
+					codigo = "<div class='checkbox'><label><input type='checkbox' class='filtros' value='"+value+"'>"+value+"</label></div>";	
+					$('#proveedores').append(codigo);
+				});
+				
+				$('#categorias').append("<h3 class='text-center' style='margin-bottom:25px;'><span class='glyphicon glyphicon-list-alt'></span> Categorias</h3>");	
+				$.each(categorias, function( index, value ) {
+					codigo = "<div class='checkbox'><label><input type='checkbox' class='filtros' value='"+value+"'>"+value+"</label></div>";	
+					$('#categorias').append(codigo);
+				});
+			});
+		}
+	});
+
+ 	$(document).on('change','.filtros',function() {
+			  if ($(this).is(':checked')) {
+			  	filtro = $(this).val();
+			  	$("[title*='"+filtro+"']").css({
+			  			background: 'rgba(255,255,255,0.3)',
+			  		});
+			  } else {
+			  	$("[title*='"+filtro+"']").css({
+			  			background: 'rgba(255,255,255,0)',
+			  		});
+			  }
+			});
+	
+
+ 	$(document).on('click', '.cuadros' , function() {
+        $('#editarcuadro').modal();
+ 		partes = ($(this).attr('title')).split('//');
+		$('#nombre_casilla').text('Editar posición '+partes[0].toUpperCase());
+ 		$('#estanteria').val(partes[6]);
+		$('#posicion').val(partes[0]);
+		$('#empresa').val(partes[1]);
+		$('#producto').val(partes[2]); 
+		$('#categoria').val(partes[7]);
+		$('#fechainicial').val(partes[3]);
+		$('#fechafinal').val(partes[4]);
+		$('#mensualidad').val(partes[5]);
+	});
+
+ 	$('#guardaredicion').click(function(event) {
+		estanteria    = $('#estanteria').val();
+		posicion      = $('#posicion').val();
+		categoria     = $('#categoria').val();
+		empresa       = $('#empresa').val();
+		producto      = $('#producto').val();
+		fecha_inicial = $('#fechainicial').val();
+		fecha_final   = $('#fechafinal').val();
+		mensualidad   = $('#mensualidad').val();
+		$.get( "/updatedata",{estanteria:estanteria,posicion:posicion,categoria:categoria,empresa:empresa,producto:producto,fecha_inicial:fecha_inicial,fecha_final:fecha_final,mensualidad:mensualidad},function( data ) {
+			alert(data);
+			location.reload();
+		});
+ 	});
+
+ 	$('#logout').click(function() {
+ 		window.location = "/logout";
+ 	});
+
+ </script>
+<div class="pop-up"></div>
+
+</body>
+
+</html>
