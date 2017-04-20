@@ -189,7 +189,7 @@ app.get('/login', function (req, res) {
 		if(rows.length > 0){
 			session.username = usuario;
 			session.nombre   = rows[0]['nombre'];
-			res.redirect('alejandro2.html');
+			res.redirect('dock.html');
 		}else{
 			alert("Usuario invalido");
 		}
